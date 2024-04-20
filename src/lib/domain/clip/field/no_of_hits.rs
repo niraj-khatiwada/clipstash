@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct NoOfHits(u64);
 
 impl NoOfHits {
-    // The Constructor derivce above does this same thing below. Since, it's used a lot, we can use Constructor derive instead.
+    // The Constructor derive above does this same thing below. Since, it's used a lot, we can use Constructor derive instead.
     // pub fn new(value: u64) -> Self {
     //     Self(value)
     // }
