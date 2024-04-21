@@ -2,6 +2,8 @@ use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 use uuid::Uuid;
 
+use crate::domain::clip::ClipError;
+
 #[derive(Debug, Serialize, Deserialize)]
 pub struct ShortCode(String);
 
@@ -35,7 +37,7 @@ impl From<&str> for ShortCode {
 }
 
 impl FromStr for ShortCode {
-    type Err = String;
+    type Err = ClipError;
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(s.into())
     }

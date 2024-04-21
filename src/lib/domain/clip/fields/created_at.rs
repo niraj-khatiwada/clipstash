@@ -1,8 +1,8 @@
+use crate::domain::datetime::DateTime;
+use derive_more::Constructor;
 use serde::{Deserialize, Serialize};
 
-use crate::domain::datetime::DateTime;
-
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Constructor)]
 pub struct CreatedAt(DateTime);
 
 impl CreatedAt {
