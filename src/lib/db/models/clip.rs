@@ -4,20 +4,23 @@ use chrono::NaiveDateTime;
 use sqlx;
 
 use crate::domain::{
-    clip::{fields as clip_fields, Clip as DomainClip, ClipError},
+    clip::{
+        fields::{self as clip_fields, short_code::ShortCode},
+        Clip as DomainClip, ClipError,
+    },
     datetime::DateTime,
 };
 
 #[derive(Debug, sqlx::FromRow)]
 pub struct Clip {
-    pub id: String,
-    pub short_code: String,
-    pub title: Option<String>,
-    pub content: String,
-    pub password: Option<String>,
-    pub created_at: NaiveDateTime,
-    pub expires_at: Option<NaiveDateTime>,
-    pub no_of_hits: u64,
+    pub(in crate::db) id: String,
+    pub(in crate::db) short_code: String,
+    pub(in crate::db) title: Option<String>,
+    pub(in crate::db) content: String,
+    pub(in crate::db) password: Option<String>,
+    pub(in crate::db) created_at: NaiveDateTime,
+    pub(in crate::db) expires_at: Option<NaiveDateTime>,
+    pub(in crate::db) no_of_hits: i64,
 }
 
 impl TryFrom<Clip> for DomainClip {
@@ -38,4 +41,30 @@ impl TryFrom<Clip> for DomainClip {
             no_of_hits: clip_fields::no_of_hits::NoOfHits::new(clip.no_of_hits),
         })
     }
+}
+
+pub struct GetClip {
+    pub(in crate::db) short_code: String,
+}
+
+impl From<ShortCode> for GetClip {
+    fn from(sc: ShortCode) -> Self {
+        Self {
+            short_code: sc.into_inner(),
+        }
+    }
+}
+
+impl From<String> for GetClip {
+    fn from(sc: String) -> Self {
+        Self { short_code: sc }
+    }
+}
+
+pub struct InsertClip {
+    pub short_code: String,
+    pub title: Option<String>,
+    pub content: String,
+    pub password: Option<String>,
+    pub expires_at: Option<NaiveDateTime>,
 }

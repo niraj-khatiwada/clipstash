@@ -8,7 +8,7 @@ use crate::domain::clip::ClipError;
 #[derive(Debug, thiserror::Error)]
 pub enum DbError {
     #[error("Database error occurred {0}")]
-    Database(#[source] sqlx::Error),
+    Database(#[from] sqlx::Error),
 }
 
 #[derive(Debug, Serialize, Deserialize, From)]
