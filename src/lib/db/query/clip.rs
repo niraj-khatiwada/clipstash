@@ -46,3 +46,59 @@ pub async fn insert_clip<D: Into<clip::InsertClip>>(
 
     get_clip(clip_model.short_code, pool).await
 }
+
+pub async fn update_clip<D: Into<clip::UpdateClip>>(
+    data: D,
+    pool: &DatabasePool,
+) -> Result<clip::Clip> {
+    let clip_model: clip::UpdateClip = data.into();
+
+    let mut update_fields: Vec<String> = Vec::new();
+
+    if let Some(_) = &clip_model.title {
+        update_fields.push(String::from("title = $2"));
+    };
+
+    if let Some(_) = &clip_model.content {
+        update_fields.push(String::from("content = $3"));
+    };
+
+    if let Some(_) = &clip_model.password {
+        update_fields.push(String::from("password = $4"));
+    };
+
+    if let Some(_) = &clip_model.expires_at {
+        update_fields.push(String::from("expires_at = $5"));
+    };
+
+    let mut update_sql = String::from("");
+
+    for field in update_fields {
+        update_sql = if update_sql.len() == 0 {
+            format!("{}", field)
+        } else {
+            format!("{}, {}", &update_sql, field)
+        };
+    }
+
+    if update_sql.len() > 0 {
+        let sql = format!(
+            r#"
+            UPDATE clip SET 
+                {}
+            WHERE short_code = $1"#,
+            update_sql
+        );
+        println!("{:?}", sql);
+        sqlx::query(&sql)
+            .bind(&clip_model.short_code)
+            .bind(&clip_model.title)
+            .bind(&clip_model.content)
+            .bind(&clip_model.password)
+            .bind(&clip_model.expires_at)
+            .execute(pool)
+            .await?;
+    }
+
+    get_clip(clip_model.short_code, pool).await
+}

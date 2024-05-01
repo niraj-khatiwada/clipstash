@@ -34,7 +34,6 @@ impl Database<sqlx::Postgres> {
 
     pub fn get_default_connection_string() -> Result<String, dotenvy::Error> {
         let conn_string = dotenvy::var("DATABASE_URL")?;
-
         return Ok(conn_string);
     }
 }

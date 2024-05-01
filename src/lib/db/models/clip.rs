@@ -68,3 +68,11 @@ pub struct InsertClip {
     pub password: Option<String>,
     pub expires_at: Option<NaiveDateTime>,
 }
+
+pub struct UpdateClip {
+    pub short_code: String,
+    pub title: Option<String>,
+    pub content: Option<String>,
+    pub password: Option<String>,
+    pub expires_at: Option<NaiveDateTime>,
+}
