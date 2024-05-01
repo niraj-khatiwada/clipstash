@@ -82,17 +82,18 @@ pub struct InsertClip {
 impl From<CreateClipDto> for InsertClip {
     fn from(clip_dto: CreateClipDto) -> Self {
         Self {
-            short_code: clip_dto.short_code.into_inner(),
-            content: clip_dto.content.into_inner(),
-            title: clip_dto.title.into_inner(),
-            password: clip_dto.password.into_inner(),
-            expires_at: clip_dto.expires_at.into_inner().map(|dt| dt.to_naive()),
+            short_code: clip_dto.short_code,
+            content: clip_dto.content,
+            title: clip_dto.title,
+            password: clip_dto.password,
+            expires_at: clip_dto
+                .expires_at
+                .map(|dt| NaiveDateTime::from_str(&dt).unwrap()),
         }
     }
 }
 #[derive(Serialize, Deserialize)]
 pub struct UpdateClip {
-    pub(in crate::db) short_code: String,
     pub(in crate::db) title: Option<String>,
     pub(in crate::db) content: Option<String>,
     pub(in crate::db) password: Option<String>,
@@ -102,11 +103,10 @@ pub struct UpdateClip {
 impl From<UpdateClipDto> for UpdateClip {
     fn from(clip_dto: UpdateClipDto) -> Self {
         Self {
-            short_code: clip_dto.short_code.into_inner(),
-            title: clip_dto.title.into_inner(),
-            content: Some(clip_dto.content.into_inner()),
-            password: clip_dto.password.into_inner(),
-            expires_at: clip_dto.expires_at.into_inner().map(|dt| dt.to_naive()),
+            title: clip_dto.title,
+            content: clip_dto.content,
+            password: clip_dto.password,
+            expires_at: clip_dto.expires_at,
         }
     }
 }

@@ -54,10 +54,12 @@ pub async fn insert_clip<D: Into<clip::InsertClip>>(
     get_clip(clip_model.short_code, pool).await
 }
 
-pub async fn update_clip<D: Into<clip::UpdateClip>>(
+pub async fn update_clip<D: Into<clip::UpdateClip>, ID: Into<clip::GetClip>>(
+    id: ID,
     data: D,
     pool: &DatabasePool,
 ) -> Result<clip::Clip> {
+    let clip_id: clip::GetClip = id.into();
     let clip_model: clip::UpdateClip = data.into();
 
     let mut update_fields: Vec<String> = Vec::new();
@@ -98,7 +100,7 @@ pub async fn update_clip<D: Into<clip::UpdateClip>>(
         );
         println!("{:?}", sql);
         sqlx::query(&sql)
-            .bind(&clip_model.short_code)
+            .bind(&clip_id.short_code)
             .bind(&clip_model.title)
             .bind(&clip_model.content)
             .bind(&clip_model.password)
@@ -107,7 +109,7 @@ pub async fn update_clip<D: Into<clip::UpdateClip>>(
             .await?;
     }
 
-    get_clip(clip_model.short_code, pool).await
+    get_clip(clip_id.short_code, pool).await
 }
 
 pub async fn delete_clip<T: Into<DeleteClip>>(data: T, pool: &DatabasePool) -> Result<bool> {

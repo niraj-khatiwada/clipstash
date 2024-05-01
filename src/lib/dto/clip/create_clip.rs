@@ -1,15 +1,10 @@
 use serde::{Deserialize, Serialize};
 
-use crate::domain::clip::fields::{
-    content::Content, expires_at::ExpiresAt, password::Password, short_code::ShortCode,
-    title::Title,
-};
-
 #[derive(Serialize, Deserialize)]
 pub struct CreateClip {
-    pub short_code: ShortCode,
-    pub content: Content,
-    pub title: Title,
-    pub password: Password,
-    pub expires_at: ExpiresAt,
+    pub short_code: String,
+    pub content: String,
+    pub title: Option<String>,
+    pub password: Option<String>,
+    pub expires_at: Option<String>, // Format should be ISO String without timezone. For eg: "2024-05-01T16:54:05.372"
 }

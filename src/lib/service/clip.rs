@@ -1,6 +1,7 @@
 use super::ServiceError;
 use crate::db::{query, DatabasePool};
 use crate::domain::clip as domain_clip;
+use crate::domain::clip::fields::short_code::ShortCode;
 use crate::dto::clip as clip_dto;
 
 type Result<T> = std::result::Result<T, ServiceError>;
@@ -15,7 +16,7 @@ pub async fn get_clip<DTO: Into<clip_dto::GetClip>>(
         .try_into()?;
 
     if clip.password.has_password() {
-        if let Some(password) = clip_dto.password.into_inner() {
+        if let Some(password) = clip_dto.password {
             if clip.password.are_passwords_equal(&password) {
                 return Ok(clip);
             } else {
@@ -41,10 +42,13 @@ pub async fn create_clip(
 }
 
 pub async fn update_clip(
+    short_code: ShortCode,
     dto: clip_dto::UpdateClip,
     pool: &DatabasePool,
 ) -> Result<domain_clip::Clip> {
-    let clip: domain_clip::Clip = query::clip::update_clip(dto, pool).await?.try_into()?;
+    let clip: domain_clip::Clip = query::clip::update_clip(short_code, dto, pool)
+        .await?
+        .try_into()?;
     Ok(clip)
 }
 

@@ -4,15 +4,15 @@ use crate::domain::clip::fields::{password::Password, short_code::ShortCode};
 
 #[derive(Serialize, Deserialize)]
 pub struct GetClip {
-    pub short_code: ShortCode,
-    pub password: Password,
+    pub short_code: String,
+    pub password: Option<String>,
 }
 
 impl GetClip {
     fn from_raw(short_code: &str) -> Self {
         Self {
             short_code: short_code.into(),
-            password: Password::default(),
+            password: Password::default().into_inner(),
         }
     }
 }

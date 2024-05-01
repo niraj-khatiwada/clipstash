@@ -14,6 +14,18 @@ struct GetClipParams {
     short_code: String,
 }
 
+#[get("/clips")]
+pub async fn get_clips(app_data: web::Data<AppData>) -> Result<web::Json<Vec<Clip>>, ServiceError> {
+    if let Ok(clip_models) = query::clip::get_clips(&app_data.db_pool).await {
+        let clips: Vec<Clip> = clip_models
+            .iter()
+            .map(|clip_model| clip_model.to_owned().try_into().unwrap())
+            .collect();
+        return Ok(web::Json(clips));
+    }
+    Err(ServiceError::InternalServer)
+}
+
 #[get("/clips/{short_code}")]
 pub async fn get_clip(
     params: web::Path<GetClipParams>,
@@ -29,18 +41,6 @@ pub async fn get_clip(
     } else {
         Err(ServiceError::NotFound(String::from("Clip not found.")))
     }
-}
-
-#[get("/clips")]
-pub async fn get_clips(app_data: web::Data<AppData>) -> Result<web::Json<Vec<Clip>>, ServiceError> {
-    if let Ok(clip_models) = query::clip::get_clips(&app_data.db_pool).await {
-        let clips: Vec<Clip> = clip_models
-            .iter()
-            .map(|clip_model| clip_model.to_owned().try_into().unwrap())
-            .collect();
-        return Ok(web::Json(clips));
-    }
-    Err(ServiceError::InternalServer)
 }
 
 #[post("/clips")]
@@ -73,9 +73,10 @@ pub async fn update_clip(
     body: web::Json<UpdateClipDto>,
     app_data: web::Data<AppData>,
 ) -> Result<web::Json<Clip>, ServiceError> {
+    let short_code: ShortCode = params.short_code.to_owned().into();
     let clip_model = query::clip::update_clip(
+        short_code,
         UpdateClipDto {
-            short_code: params.short_code.to_owned().into(),
             content: body.content.to_owned(),
             title: body.title.to_owned(),
             password: body.password.to_owned(),

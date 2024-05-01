@@ -1,4 +1,7 @@
+use std::str::FromStr;
+
 use actix_web::{self, middleware, web, App, HttpResponse, HttpServer, Responder};
+use chrono::{NaiveDate, NaiveDateTime, NaiveTime};
 use dotenvy::dotenv;
 
 use lib::api::clip::{create_clip, delete_clip, get_clip, get_clips, update_clip};
@@ -15,7 +18,7 @@ async fn main() -> std::io::Result<()> {
 
     let server_port = dotenvy::var("SERVER_PORT").unwrap();
 
-    std::env::set_var("RUST_LOG", "actix_web=debug, actix_server=info");
+    std::env::set_var("RUST_LOG", "actix_web=debug, actix_server=debug");
     std::env::set_var("RUST_BACKTRACE", "1");
     env_logger::init();
 
