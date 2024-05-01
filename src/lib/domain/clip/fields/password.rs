@@ -3,7 +3,7 @@ use std::str::FromStr;
 use super::super::ClipError;
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Password(Option<String>); // Password is optional
 
 impl Password {

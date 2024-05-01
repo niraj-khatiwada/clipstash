@@ -1,14 +1,20 @@
-use std::str::FromStr;
-
 use chrono::NaiveDateTime;
 use sqlx;
+use std::str::FromStr;
 
-use crate::domain::{
-    clip::{
-        fields::{self as clip_fields, short_code::ShortCode},
-        Clip as DomainClip, ClipError,
+use dto::clip::CreateClip as CreateClipDto;
+use dto::clip::DeleteClip as DeleteClipDto;
+use dto::clip::UpdateClip as UpdateClipDto;
+
+use crate::{
+    domain::{
+        clip::{
+            fields::{self as clip_fields, short_code::ShortCode},
+            Clip as DomainClip, ClipError,
+        },
+        datetime::DateTime,
     },
-    datetime::DateTime,
+    dto,
 };
 
 #[derive(Debug, sqlx::FromRow)]
@@ -69,10 +75,60 @@ pub struct InsertClip {
     pub expires_at: Option<NaiveDateTime>,
 }
 
+impl From<CreateClipDto> for InsertClip {
+    fn from(clip_dto: CreateClipDto) -> Self {
+        Self {
+            short_code: clip_dto.short_code.into_inner(),
+            content: clip_dto.content.into_inner(),
+            title: clip_dto.title.into_inner(),
+            password: clip_dto.password.into_inner(),
+            expires_at: clip_dto.expires_at.into_inner().map(|dt| dt.to_naive()),
+        }
+    }
+}
+
 pub struct UpdateClip {
     pub short_code: String,
     pub title: Option<String>,
     pub content: Option<String>,
     pub password: Option<String>,
     pub expires_at: Option<NaiveDateTime>,
+}
+
+impl From<UpdateClipDto> for UpdateClip {
+    fn from(clip_dto: UpdateClipDto) -> Self {
+        Self {
+            short_code: clip_dto.short_code.into_inner(),
+            title: clip_dto.title.into_inner(),
+            content: Some(clip_dto.content.into_inner()),
+            password: clip_dto.password.into_inner(),
+            expires_at: clip_dto.expires_at.into_inner().map(|dt| dt.to_naive()),
+        }
+    }
+}
+
+pub struct DeleteClip {
+    pub(in crate::db) short_code: String,
+}
+
+impl From<ShortCode> for DeleteClip {
+    fn from(sc: ShortCode) -> Self {
+        Self {
+            short_code: sc.into_inner(),
+        }
+    }
+}
+
+impl From<String> for DeleteClip {
+    fn from(sc: String) -> Self {
+        Self { short_code: sc }
+    }
+}
+
+impl From<DeleteClipDto> for DeleteClip {
+    fn from(clip_dto: DeleteClipDto) -> Self {
+        Self {
+            short_code: clip_dto.short_code.into(),
+        }
+    }
 }

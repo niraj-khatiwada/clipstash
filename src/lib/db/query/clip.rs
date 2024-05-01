@@ -1,6 +1,7 @@
 use super::super::models::clip;
 use super::super::DatabasePool;
-use crate::domain::db::fields::id::DbError;
+use crate::db::models::clip::DeleteClip;
+use crate::domain::db::DbError;
 
 pub type Result<T> = std::result::Result<T, DbError>;
 
@@ -101,4 +102,17 @@ pub async fn update_clip<D: Into<clip::UpdateClip>>(
     }
 
     get_clip(clip_model.short_code, pool).await
+}
+
+pub async fn delete_clip<T: Into<DeleteClip>>(data: T, pool: &DatabasePool) -> Result<bool> {
+    let clip_model: clip::DeleteClip = data.into();
+
+    sqlx::query!(
+        "DELETE FROM clip WHERE short_code = $1",
+        clip_model.short_code
+    )
+    .execute(pool)
+    .await?;
+
+    Ok(true)
 }
