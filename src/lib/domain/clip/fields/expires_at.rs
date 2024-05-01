@@ -2,7 +2,7 @@ use crate::domain::{clip::ClipError, datetime::DateTime};
 use serde::{Deserialize, Serialize};
 use std::str::FromStr;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ExpiresAt(Option<DateTime>);
 
 impl ExpiresAt {

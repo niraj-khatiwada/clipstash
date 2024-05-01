@@ -1,5 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::domain::clip::fields::{password::Password, short_code::ShortCode};
 
+#[derive(Serialize, Deserialize)]
 pub struct GetClip {
     pub short_code: ShortCode,
     pub password: Password,

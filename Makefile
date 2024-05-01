@@ -1,3 +1,9 @@
+#Server
+dev-server:
+	 cargo watch -x run
+server:
+	cargo run .
+
 # Migrations
 migration_source := src/lib/db/migrations
 

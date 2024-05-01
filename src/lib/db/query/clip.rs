@@ -5,6 +5,12 @@ use crate::domain::db::DbError;
 
 pub type Result<T> = std::result::Result<T, DbError>;
 
+pub async fn get_clips(pool: &DatabasePool) -> Result<Vec<clip::Clip>> {
+    Ok(sqlx::query_as!(clip::Clip, "SELECT * FROM clip;")
+        .fetch_all(pool)
+        .await?)
+}
+
 pub async fn get_clip<I: Into<clip::GetClip>>(
     identifier: I,
     pool: &DatabasePool,

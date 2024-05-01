@@ -1,5 +1,8 @@
+use serde::{Deserialize, Serialize};
+
 use crate::domain::clip::fields::short_code::ShortCode;
 
+#[derive(Serialize, Deserialize)]
 pub struct DeleteClip {
     pub short_code: ShortCode,
 }

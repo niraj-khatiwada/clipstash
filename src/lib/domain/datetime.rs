@@ -8,7 +8,7 @@ use super::clip::ClipError;
 
 type DateTimeUTC = ChronoDateTime<Utc>;
 
-#[derive(Debug, Serialize, Deserialize, From)]
+#[derive(Debug, Serialize, Deserialize, From, Clone)]
 pub struct DateTime(DateTimeUTC);
 
 impl DateTime {

@@ -1,4 +1,6 @@
 use chrono::NaiveDateTime;
+use serde::Deserialize;
+use serde::Serialize;
 use sqlx;
 use std::str::FromStr;
 
@@ -17,7 +19,7 @@ use crate::{
     dto,
 };
 
-#[derive(Debug, sqlx::FromRow)]
+#[derive(Debug, sqlx::FromRow, Clone)]
 pub struct Clip {
     pub(in crate::db) id: String,
     pub(in crate::db) short_code: String,
@@ -49,6 +51,7 @@ impl TryFrom<Clip> for DomainClip {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct GetClip {
     pub(in crate::db) short_code: String,
 }
@@ -67,12 +70,13 @@ impl From<String> for GetClip {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct InsertClip {
-    pub short_code: String,
-    pub title: Option<String>,
-    pub content: String,
-    pub password: Option<String>,
-    pub expires_at: Option<NaiveDateTime>,
+    pub(in crate::db) short_code: String,
+    pub(in crate::db) title: Option<String>,
+    pub(in crate::db) content: String,
+    pub(in crate::db) password: Option<String>,
+    pub(in crate::db) expires_at: Option<NaiveDateTime>,
 }
 
 impl From<CreateClipDto> for InsertClip {
@@ -86,13 +90,13 @@ impl From<CreateClipDto> for InsertClip {
         }
     }
 }
-
+#[derive(Serialize, Deserialize)]
 pub struct UpdateClip {
-    pub short_code: String,
-    pub title: Option<String>,
-    pub content: Option<String>,
-    pub password: Option<String>,
-    pub expires_at: Option<NaiveDateTime>,
+    pub(in crate::db) short_code: String,
+    pub(in crate::db) title: Option<String>,
+    pub(in crate::db) content: Option<String>,
+    pub(in crate::db) password: Option<String>,
+    pub(in crate::db) expires_at: Option<NaiveDateTime>,
 }
 
 impl From<UpdateClipDto> for UpdateClip {
@@ -107,6 +111,7 @@ impl From<UpdateClipDto> for UpdateClip {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct DeleteClip {
     pub(in crate::db) short_code: String,
 }

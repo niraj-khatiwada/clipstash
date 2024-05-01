@@ -4,7 +4,7 @@ use uuid::Uuid;
 
 use crate::domain::clip::ClipError;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ShortCode(String);
 
 impl ShortCode {
@@ -27,6 +27,12 @@ impl Default for ShortCode {
 impl From<ShortCode> for String {
     fn from(value: ShortCode) -> Self {
         value.0
+    }
+}
+
+impl From<String> for ShortCode {
+    fn from(val: String) -> Self {
+        Self(val)
     }
 }
 
